@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `transportation_company_DB`.`truck_model` (
   `max_trailer_weight` INT UNSIGNED NULL,
   `payload` INT UNSIGNED NULL,
   PRIMARY KEY (`brand`),
-  INDEX `brand_idx` () VISIBLE)
+  INDEX `brand_idx` (`brand` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `transportation_company_DB`.`trailer` (
   `weight` INT UNSIGNED NOT NULL,
   `payload` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`vin_nr`),
-  INDEX `vin_nr_idx` () VISIBLE)
+  INDEX `vin_nr_idx` (`vin_nr` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 
