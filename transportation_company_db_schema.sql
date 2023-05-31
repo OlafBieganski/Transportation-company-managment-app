@@ -1,5 +1,3 @@
--- MySQL Workbench Forward Engineering
-
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
@@ -18,16 +16,16 @@ USE `transportation_company_DB` ;
 -- Table `transportation_company_DB`.`truck_model`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `transportation_company_DB`.`truck_model` (
-  `brand` VARCHAR(45) NOT NULL,
   `model` VARCHAR(45) NOT NULL,
+  `brand` VARCHAR(45) NOT NULL,
   `weight` INT UNSIGNED NOT NULL,
   `width` INT UNSIGNED NOT NULL,
   `lenght` INT UNSIGNED NOT NULL,
   `height` INT UNSIGNED NOT NULL,
   `max_trailer_weight` INT UNSIGNED NULL,
   `payload` INT UNSIGNED NULL,
-  PRIMARY KEY (`brand`),
-  INDEX `brand_idx` (`brand` ASC) VISIBLE)
+  PRIMARY KEY (`model`),
+  INDEX `model_idx` (`model` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 
@@ -59,20 +57,20 @@ CREATE TABLE IF NOT EXISTS `transportation_company_DB`.`trucks` (
   `AC` DATE NULL,
   `aditional_info` VARCHAR(1000) NULL,
   `trailer_vin_nr` INT NULL,
-  `truck_model_brand` VARCHAR(45) NOT NULL,
+  `truck_model_model` VARCHAR(45) NOT NULL,
   UNIQUE INDEX `registration_nr_UNIQUE` (`registration_nr` ASC) INVISIBLE,
-  PRIMARY KEY (`vin_nr`, `truck_model_brand`),
+  PRIMARY KEY (`vin_nr`, `truck_model_model`),
   INDEX `vin_nr_idx` (`vin_nr` ASC) VISIBLE,
-  INDEX `fk_trucks_truck_model1_idx` (`truck_model_brand` ASC) VISIBLE,
   INDEX `fk_trucks_trailer1_idx` (`trailer_vin_nr` ASC) VISIBLE,
-  CONSTRAINT `fk_trucks_truck_model1`
-    FOREIGN KEY (`truck_model_brand`)
-    REFERENCES `transportation_company_DB`.`truck_model` (`brand`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+  INDEX `fk_trucks_truck_model1_idx` (`truck_model_model` ASC) VISIBLE,
   CONSTRAINT `fk_trucks_trailer1`
     FOREIGN KEY (`trailer_vin_nr`)
     REFERENCES `transportation_company_DB`.`trailer` (`vin_nr`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_trucks_truck_model1`
+    FOREIGN KEY (`truck_model_model`)
+    REFERENCES `transportation_company_DB`.`truck_model` (`model`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -151,7 +149,8 @@ ENGINE = InnoDB;
 -- Table `transportation_company_DB`.`shipment`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `transportation_company_DB`.`shipment` (
-  `customer_id` INT NOT NULL AUTO_INCREMENT,
+  `shipment_id` INT NOT NULL AUTO_INCREMENT,
+  `customer_id` INT NOT NULL,
   `route_route_id` INT NOT NULL,
   `payload_weight` INT NOT NULL,
   `deadline` DATE NOT NULL,
@@ -160,8 +159,9 @@ CREATE TABLE IF NOT EXISTS `transportation_company_DB`.`shipment` (
   `height` INT UNSIGNED NULL,
   `lenght` INT UNSIGNED NULL,
   `aditional_info` VARCHAR(1000) NULL,
-  PRIMARY KEY (`customer_id`, `route_route_id`),
   INDEX `fk_shipment_route1_idx` (`route_route_id` ASC) VISIBLE,
+  PRIMARY KEY (`shipment_id`),
+  INDEX `shipment_id_idx` (`shipment_id` ASC) VISIBLE,
   CONSTRAINT `fk_shipment_customer1`
     FOREIGN KEY (`customer_id`)
     REFERENCES `transportation_company_DB`.`customer` (`customer_id`)
@@ -228,6 +228,55 @@ CREATE TABLE IF NOT EXISTS `transportation_company_DB`.`jobs` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+------------------------------
+-- Stored Procedures
+------------------------------
+
+DELIMITER //
+
+CREATE PROCEDURE `transportation_company_DB`.`register_user` (
+  IN p_username VARCHAR(20),
+  IN p_password VARCHAR(20),
+  IN p_email VARCHAR(45),
+  IN p_first_name VARCHAR(20),
+  IN p_last_name VARCHAR(20),
+  IN p_sex ENUM('M', 'F'),
+  IN p_age INT UNSIGNED,
+  IN p_salary INT UNSIGNED,
+  IN p_phone_nr VARCHAR(15)
+)
+BEGIN
+  DECLARE v_user_count INT;
+  
+  -- Sprawdź, czy użytkownik o podanej nazwie już istnieje
+  SELECT COUNT(*) INTO v_user_count
+  FROM `transportation_company_DB`.`access`
+  WHERE username = p_username;
+  
+  -- Jeśli użytkownik już istnieje, zakończ procedurę z błędem
+  IF v_user_count > 0 THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'Użytkownik o podanej nazwie już istnieje';
+  END IF;
+  
+  -- Dodaj nowego użytkownika
+  START TRANSACTION;
+  
+  -- Dodaj wpis do tabeli employes
+  INSERT INTO `transportation_company_DB`.`employes` (first_name, last_name, sex, age, salary, email, phone_nr)
+  VALUES (p_first_name, p_last_name, p_sex, p_age, p_salary, p_email, p_phone_nr);
+  
+  -- Pobierz ID dodanego użytkownika
+  SET @employee_id = LAST_INSERT_ID();
+  
+  -- Dodaj wpis do tabeli access
+  INSERT INTO `transportation_company_DB`.`access` (username, password, acount_type, employes_employee_id)
+  VALUES (p_username, p_password, 'U', @employee_id);
+  
+  COMMIT;
+END //
+
+DELIMITER ;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
