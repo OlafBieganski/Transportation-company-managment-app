@@ -105,8 +105,8 @@ CREATE TABLE IF NOT EXISTS `transportation_company_DB`.`drivers` (
   CONSTRAINT `fk_drivers_employes1`
     FOREIGN KEY (`employes_employee_id`)
     REFERENCES `transportation_company_DB`.`employes` (`employee_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_drivers_trucks1`
     FOREIGN KEY (`trucks_vin_nr`)
     REFERENCES `transportation_company_DB`.`trucks` (`vin_nr`)
@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS `transportation_company_DB`.`route` (
   `route_id` INT NOT NULL AUTO_INCREMENT,
   `destination` VARCHAR(45) NOT NULL,
   `pickup_point` VARCHAR(45) NOT NULL,
-  `distance` INT UNSIGNED NOT NULL,
+  `distance` INT UNSIGNED NULL,
   `aditional_info` VARCHAR(1000) NULL,
   PRIMARY KEY (`route_id`),
   INDEX `route_id_idx` (`route_id` ASC) VISIBLE)
@@ -191,13 +191,13 @@ CREATE TABLE IF NOT EXISTS `transportation_company_DB`.`access` (
   CONSTRAINT `fk_access_employes1`
     FOREIGN KEY (`employes_employee_id`)
     REFERENCES `transportation_company_DB`.`employes` (`employee_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_access_customer1`
     FOREIGN KEY (`customer_customer_id`)
     REFERENCES `transportation_company_DB`.`customer` (`customer_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -234,7 +234,8 @@ ENGINE = InnoDB;
 
 DELIMITER //
 
-CREATE PROCEDURE `transportation_company_DB`.`register_user` (
+-- Dodanie nowego pracownika i jego konta
+CREATE PROCEDURE `transportation_company_DB`.`register_employee` (
   IN p_username VARCHAR(20),
   IN p_password VARCHAR(20),
   IN p_email VARCHAR(45),
@@ -243,10 +244,17 @@ CREATE PROCEDURE `transportation_company_DB`.`register_user` (
   IN p_sex ENUM('M', 'F'),
   IN p_age INT UNSIGNED,
   IN p_salary INT UNSIGNED,
-  IN p_phone_nr VARCHAR(15)
+  IN p_phone_nr VARCHAR(15),
+  IN p_access_type ENUM('D', 'L', 'A', 'C')
 )
 BEGIN
   DECLARE v_user_count INT;
+
+  -- Nie może byc klientem
+  IF p_access_type = 'C' THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'Pracownik nie może posiadac konta klienta';
+  END IF
   
   -- Sprawdź, czy użytkownik o podanej nazwie już istnieje
   SELECT COUNT(*) INTO v_user_count
@@ -271,9 +279,161 @@ BEGIN
   
   -- Dodaj wpis do tabeli access
   INSERT INTO `transportation_company_DB`.`access` (username, password, acount_type, employes_employee_id)
-  VALUES (p_username, p_password, 'U', @employee_id);
+  VALUES (p_username, p_password, p_access_type, @employee_id);
   
   COMMIT;
+END //
+
+-- delete employee
+CREATE PROCEDURE delete_employee(
+  IN p_employee_id INT
+)
+BEGIN
+  DECLARE v_id INT;
+
+  -- Check if the employee exists
+  SELECT COUNT(*) INTO v_id
+  FROM `transportation_company_DB`.`employes`
+  WHERE employee_id = p_employee_id;
+
+  IF v_id = 0 THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'Employee does not exist';
+  ELSE
+    BEGIN
+      -- Delete the employee from the employes table
+      DELETE FROM `transportation_company_DB`.`employes`
+      WHERE employee_id = p_employee_id;
+
+      SELECT 'Employee and corresponding access record deleted' AS result;
+    END;
+  END IF;
+END //
+
+-- Dodanie pracownika jako kierowcy
+CREATE PROCEDURE add_as_driver (
+  IN p_employee_id INT
+)
+BEGIN
+  DECLARE v_driver_id INT;
+  
+  -- Check if the employee exists
+  SELECT COUNT(*) INTO v_driver_id
+  FROM transportation_company_DB.employes
+  WHERE employee_id = p_employee_id;
+  
+  -- If employee exists, create a driver and assign the employee
+  IF v_driver_id > 0 THEN
+    -- Create the driver
+    INSERT INTO transportation_company_DB.drivers (employes_employee_id)
+    VALUES (p_employee_id);
+    
+    -- Display success message
+    SELECT 'Driver created with employee_id: ', p_employee_id AS 'Message';
+  ELSE
+    -- Display error message if employee doesn't exist
+    SELECT 'Employee with employee_id: ', p_employee_id, ' does not exist.' AS 'Error';
+  END IF;
+END //
+
+CREATE PROCEDURE delete_as_driver(
+  IN p_employee_id INT
+)
+BEGIN
+  DECLARE v_driver_count INT;
+
+  -- Check if the employee is a driver
+  SELECT COUNT(*) INTO v_driver_count
+  FROM `transportation_company_DB`.`drivers`
+  WHERE employes_employee_id = p_employee_id;
+
+  IF v_driver_count = 0 THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'Employee is not a driver';
+  ELSE
+    BEGIN
+      -- Delete the driver from the drivers table
+      DELETE FROM `transportation_company_DB`.`drivers`
+      WHERE employes_employee_id = p_employee_id;
+
+      SELECT 'Driver deleted' AS result;
+    END;
+  END IF;
+END //
+
+-- Add a client and register his account
+CREATE PROCEDURE add_customer (
+  IN p_company_name VARCHAR(45),
+  IN p_nip_nr INT,
+  IN p_phone_nr VARCHAR(15),
+  IN p_email VARCHAR(45),
+  IN p_username VARCHAR(20),
+  IN p_password VARCHAR(20)
+)
+BEGIN
+  DECLARE v_customer_id INT;
+  
+  -- Check if the NIP number already exists
+  SELECT COUNT(*) INTO v_customer_id
+  FROM transportation_company_DB.customer
+  WHERE nip_nr = p_nip_nr;
+  
+  -- If NIP number doesn't exist, create the customer and their access account
+  IF v_customer_id = 0 THEN
+    -- Create the customer
+    INSERT INTO transportation_company_DB.customer (company_name, nip_nr, shipments_amount, phone_nr, email)
+    VALUES (p_company_name, p_nip_nr, 0, p_phone_nr, p_email);
+    
+    -- Get the auto-generated customer_id
+    SET v_customer_id = LAST_INSERT_ID();
+    
+    -- Create the access account
+    INSERT INTO transportation_company_DB.access (username, password, acount_type, customer_customer_id)
+    VALUES (p_username, p_password, 'C', v_customer_id);
+    
+    -- Display success message
+    SELECT 'Customer created with customer_id: ', v_customer_id AS 'Message';
+  ELSE
+    -- Display error message if NIP number already exists
+    SELECT 'Customer with NIP number: ', p_nip_nr, ' already exists.' AS 'Error';
+  END IF;
+END //
+
+-- delete customer
+CREATE PROCEDURE delete_customer (
+  IN p_customer_id INT
+)
+BEGIN
+  DECLARE v_count INT;
+  
+  -- Check if the customer exists
+  SELECT COUNT(*) INTO v_count
+  FROM transportation_company_DB.customer
+  WHERE customer_id = p_customer_id;
+  
+  -- If customer exists, delete the customer and their access account
+  IF v_count > 0 THEN
+    
+    -- Delete the customer
+    DELETE FROM transportation_company_DB.customer
+    WHERE customer_id = p_customer_id;
+    
+    -- Display success message
+    SELECT 'Customer with customer_id: ', p_customer_id, ' deleted.' AS 'Message';
+  ELSE
+    -- Display error message if customer doesn't exist
+    SELECT 'Customer with customer_id: ', p_customer_id, ' does not exist.' AS 'Error';
+  END IF;
+END //
+
+-- triger for increasing a shipment amount of a customers when he makes a new one
+CREATE TRIGGER increase_shipment_amount
+AFTER INSERT ON `transportation_company_DB`.`shipment`
+FOR EACH ROW
+BEGIN
+  UPDATE `transportation_company_DB`.`customer`
+  SET shipment_amount = shipment_amount + 1
+  WHERE customer_id = NEW.customer_id;
 END //
 
 DELIMITER ;
