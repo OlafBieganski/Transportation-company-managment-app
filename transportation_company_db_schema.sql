@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `transportation_company_DB`.`trucks` (
   CONSTRAINT `fk_trucks_truck_model1`
     FOREIGN KEY (`truck_model_model`)
     REFERENCES `transportation_company_DB`.`truck_model` (`model`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -254,7 +254,7 @@ BEGIN
   IF p_access_type = 'C' THEN
     SIGNAL SQLSTATE '45000'
       SET MESSAGE_TEXT = 'Pracownik nie może posiadac konta klienta';
-  END IF
+  END IF;
   
   -- Sprawdź, czy użytkownik o podanej nazwie już istnieje
   SELECT COUNT(*) INTO v_user_count
@@ -432,8 +432,95 @@ AFTER INSERT ON `transportation_company_DB`.`shipment`
 FOR EACH ROW
 BEGIN
   UPDATE `transportation_company_DB`.`customer`
-  SET shipment_amount = shipment_amount + 1
+  SET shipments_amount = shipments_amount + 1
   WHERE customer_id = NEW.customer_id;
+END //
+
+-- add trailer
+CREATE PROCEDURE transportation_company_DB.add_trailer (
+  IN p_vin_nr INT,
+  IN p_length INT UNSIGNED,
+  IN p_width INT UNSIGNED,
+  IN p_height INT UNSIGNED,
+  IN p_tandem TINYINT(1),
+  IN p_weight INT UNSIGNED,
+  IN p_payload INT UNSIGNED
+)
+BEGIN
+  IF NOT EXISTS (SELECT * FROM transportation_company_DB.trailer WHERE vin_nr = p_vin_nr) THEN
+    INSERT INTO transportation_company_DB.trailer (vin_nr, length, width, height, tandem, weight, payload)
+    VALUES (p_vin_nr, p_length, p_width, p_height, p_tandem, p_weight, p_payload);
+  END IF;
+END //
+
+-- delete trailer
+CREATE PROCEDURE transportation_company_DB.delete_trailer (
+  IN p_vin_nr INT
+)
+BEGIN
+  IF EXISTS (SELECT * FROM transportation_company_DB.trailer WHERE vin_nr = p_vin_nr) THEN
+    DELETE FROM transportation_company_DB.trailer WHERE vin_nr = p_vin_nr;
+  END IF;
+  
+  IF EXISTS (SELECT * FROM transportation_company_DB.trucks WHERE trailer_vin_nr = p_vin_nr) THEN
+    UPDATE transportation_company_DB.trucks SET trailer_vin_nr = NULL WHERE trailer_vin_nr = p_vin_nr;
+  END IF;
+END //
+
+-- add truck model
+CREATE PROCEDURE transportation_company_DB.add_truck_model (
+  IN p_model VARCHAR(45),
+  IN p_brand VARCHAR(45),
+  IN p_weight INT UNSIGNED,
+  IN p_width INT UNSIGNED,
+  IN p_length INT UNSIGNED,
+  IN p_height INT UNSIGNED,
+  IN p_max_trailer_weight INT UNSIGNED,
+  IN p_payload INT UNSIGNED
+)
+BEGIN
+  IF NOT EXISTS (SELECT * FROM transportation_company_DB.truck_model WHERE model = p_model) THEN
+    INSERT INTO transportation_company_DB.truck_model (model, brand, weight, width, length, height, max_trailer_weight, payload)
+    VALUES (p_model, p_brand, p_weight, p_width, p_length, p_height, p_max_trailer_weight, p_payload);
+  END IF;
+END //
+
+-- delete truck model
+CREATE PROCEDURE transportation_company_DB.delete_truck_model (
+  IN p_model VARCHAR(45)
+)
+BEGIN
+  IF EXISTS (SELECT * FROM transportation_company_DB.truck_model WHERE model = p_model) THEN
+    DELETE FROM transportation_company_DB.truck_model WHERE model = p_model;
+  END IF;
+END //
+
+CREATE PROCEDURE transportation_company_DB.add_truck (
+  IN p_vin_nr INT,
+  IN p_registration_nr VARCHAR(7),
+  IN p_production_year DATE,
+  IN p_car_service DATE,
+  IN p_OC DATE,
+  IN p_AC DATE,
+  IN p_additional_info VARCHAR(1000),
+  IN p_trailer_vin_nr INT,
+  IN p_truck_model_model VARCHAR(45)
+)
+BEGIN
+  IF NOT EXISTS (SELECT * FROM transportation_company_DB.trucks WHERE vin_nr = p_vin_nr OR registration_nr = p_registration_nr) THEN
+    INSERT INTO transportation_company_DB.trucks (vin_nr, registration_nr, production_year, car_service, OC, AC, additional_info, trailer_vin_nr, truck_model_model)
+    VALUES (p_vin_nr, p_registration_nr, p_production_year, p_car_service, p_OC, p_AC, p_additional_info, p_trailer_vin_nr, p_truck_model_model);
+  END IF;
+END //
+
+-- Procedure to delete a truck
+CREATE PROCEDURE transportation_company_DB.delete_truck (
+  IN p_vin_nr INT
+)
+BEGIN
+  IF EXISTS (SELECT * FROM transportation_company_DB.trucks WHERE vin_nr = p_vin_nr) THEN
+    DELETE FROM transportation_company_DB.trucks WHERE vin_nr = p_vin_nr;
+  END IF;
 END //
 
 DELIMITER ;
