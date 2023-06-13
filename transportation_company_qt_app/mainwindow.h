@@ -20,10 +20,10 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButton_7_clicked();
 
 private:
     Ui::MainWindow *ui;
+    QSqlDatabase db;
 };
 
 #endif // MAINWINDOW_H

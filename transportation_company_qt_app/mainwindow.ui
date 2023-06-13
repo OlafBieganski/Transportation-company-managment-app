@@ -48,7 +48,8 @@ border-radius: 5px;
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(255, 255, 255)</string>
+       <string notr="true">background-color:  white
+</string>
       </property>
       <property name="currentIndex">
        <number>1</number>
@@ -71,7 +72,7 @@ border-radius: 5px;
          <number>0</number>
         </property>
         <item>
-         <widget class="QWidget" name="widget" native="true">
+         <widget class="QWidget" name="menu_widget" native="true">
           <property name="styleSheet">
            <string notr="true">background-color: rgb(31, 7, 168);</string>
           </property>
@@ -93,7 +94,7 @@ border-radius: 5px;
             </spacer>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton">
+            <widget class="QPushButton" name="pb_reports">
              <property name="styleSheet">
               <string notr="true">background-color: rgb(255, 255, 255)</string>
              </property>
@@ -103,7 +104,7 @@ border-radius: 5px;
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_2">
+            <widget class="QPushButton" name="pb_empolyees">
              <property name="styleSheet">
               <string notr="true">background-color: rgb(255, 255, 255)</string>
              </property>
@@ -113,7 +114,7 @@ border-radius: 5px;
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_3">
+            <widget class="QPushButton" name="pb_shipments">
              <property name="styleSheet">
               <string notr="true">background-color: rgb(255, 255, 255)</string>
              </property>
@@ -123,7 +124,7 @@ border-radius: 5px;
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_5">
+            <widget class="QPushButton" name="pb_vehicles">
              <property name="styleSheet">
               <string notr="true">background-color: rgb(255, 255, 255)</string>
              </property>
@@ -133,7 +134,7 @@ border-radius: 5px;
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_6">
+            <widget class="QPushButton" name="pb_settings">
              <property name="styleSheet">
               <string notr="true">background-color: rgb(255, 255, 255)</string>
              </property>
@@ -159,10 +160,7 @@ border-radius: 5px;
          </widget>
         </item>
         <item>
-         <widget class="QStackedWidget" name="stackedWidget_2">
-          <widget class="QWidget" name="page_3"/>
-          <widget class="QWidget" name="page_4"/>
-         </widget>
+         <widget class="QWidget" name="basic_widget" native="true"/>
         </item>
        </layout>
       </widget>
@@ -178,6 +176,12 @@ border-radius: 5px;
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <bold>false</bold>
+           </font>
           </property>
           <property name="title">
            <string>Zaloguj się</string>
@@ -289,7 +293,11 @@ border-width: 1px;
 border-style: outset;
 border-color: black;
 border-radius: 5px;
-</string>
+
+QPushButton#pb_login:hover {
+background-color: rgb(57, 110, 255);
+color: white;
+}</string>
                 </property>
                 <property name="text">
                  <string>Zaloguj</string>
@@ -310,6 +318,11 @@ border-radius: 5px;
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox_2">
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+           </font>
+          </property>
           <property name="styleSheet">
            <string notr="true"/>
           </property>
@@ -439,7 +452,7 @@ border-radius: 5px;
             </widget>
            </item>
            <item alignment="Qt::AlignHCenter">
-            <widget class="QPushButton" name="pushButton_register">
+            <widget class="QPushButton" name="pb_register">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -464,7 +477,11 @@ font: 10pt &quot;Segoe UI&quot;;
 border-width: 1px;
 border-style: outset;
 border-color: black;
-border-radius: 5px;</string>
+border-radius: 5px;
+
+QPushButton#pb_register:hover {
+background-color: rgb(57, 110, 255);
+}</string>
              </property>
              <property name="text">
               <string>Rejestracja</string>
