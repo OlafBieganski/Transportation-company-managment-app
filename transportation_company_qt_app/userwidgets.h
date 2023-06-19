@@ -5,14 +5,12 @@
 
 enum UserType {NO_USER, ADMIN, LOGISTICIAN, CUSTOMER, DRIVER};
 
-class UserWidgets : public QWidget{
-
-    Q_OBJECT
+class UserWidgets{
 
 public:
-    UserWidgets(QWidget *parent = nullptr);
-    ~UserWidgets();
-    virtual void pb_setting_clicked() = 0;
+    UserWidgets() {}
+    ~UserWidgets() {}
+    virtual void pb_setting_clicked() {}
     virtual void pb_reports_clicked();
     virtual void pb_employees_clicked();
     virtual void pb_shipments_clicked();

@@ -8,7 +8,7 @@ namespace Ui {
 class DriverW;
 }
 
-class DriverW : public UserWidgets
+class DriverW : public QWidget, public UserWidgets
 {
     Q_OBJECT
 

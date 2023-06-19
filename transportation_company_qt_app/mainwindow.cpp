@@ -8,7 +8,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(1); // login page
-    user_widget = ui->basic_widget;
 }
 
 MainWindow::~MainWindow()
@@ -51,38 +50,40 @@ void MainWindow::on_pb_login_clicked()
         }
         switch (accountType) {
         case 'D':
-            user_widget = qobject_cast<DriverW*>(user_widget);
-            if (!user_widget)
-            {
-                qDebug() << "Casting error DriverW";
-            }
+        {
+            DriverW* temp = new DriverW();
+            userWidget = temp;
+            user_btn_handler = temp;
+        }
             break;
         case 'L':
-            user_widget = qobject_cast<LogisticianW*>(user_widget);
-            if (!user_widget)
-            {
-                qDebug() << "Casting error LogisticianW";
-            }
+        {
+            LogisticianW* temp = new LogisticianW();
+            userWidget = temp;
+            user_btn_handler = temp;
+        }
             break;
         case 'A':
-            user_widget = qobject_cast<AdminW*>(user_widget);
-            if (!user_widget)
-            {
-                qDebug() << "Casting error AdminW";
-            }
+        {
+            AdminW* temp = new AdminW();
+            userWidget = temp;
+            user_btn_handler = temp;
+        }
             break;
         case 'C':
-            user_widget = qobject_cast<CustomerW*>(user_widget);
-            if (!user_widget)
-            {
-                qDebug() << "Casting error CustomerW";
-            }
+        {
+            CustomerW* temp = new CustomerW();
+            userWidget = temp;
+            user_btn_handler = temp;
+        }
             break;
         default:
             qDebug() << "Error while determining user type. ";
             break;
         }
 
+
+        ui->stackedWidget_users->addWidget(userWidget);
         ui->stackedWidget->setCurrentIndex(0); // zmieniamy na strone glowna
     } else {
         qDebug() << "Error connecting to the database: " << db.lastError().text();

@@ -33,7 +33,8 @@ private:
     Ui::MainWindow *ui;
     QSqlDatabase db;
     UserType logged_user = NO_USER;
-    UserWidgets* user_widget = nullptr;
+    UserWidgets* user_btn_handler = nullptr;
+    QWidget* userWidget = nullptr;
     QString username = "";
     QString passwd = "";
 };

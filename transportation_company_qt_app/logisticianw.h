@@ -8,7 +8,7 @@ namespace Ui {
 class LogisticianW;
 }
 
-class LogisticianW : public UserWidgets
+class LogisticianW : public QWidget,  public UserWidgets
 {
     Q_OBJECT
 

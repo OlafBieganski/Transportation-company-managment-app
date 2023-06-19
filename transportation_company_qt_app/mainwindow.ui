@@ -160,7 +160,10 @@ border-radius: 5px;
          </widget>
         </item>
         <item>
-         <widget class="UserWidgets" name="basic_widget" native="true"/>
+         <widget class="QStackedWidget" name="stackedWidget_users">
+          <widget class="QWidget" name="page"/>
+          <widget class="QWidget" name="page_2"/>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -509,14 +512,6 @@ background-color: rgb(57, 110, 255);
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>UserWidgets</class>
-   <extends>QWidget</extends>
-   <header>userwidgets.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

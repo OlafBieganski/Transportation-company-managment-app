@@ -8,7 +8,7 @@ namespace Ui {
 class CustomerW;
 }
 
-class CustomerW : public UserWidgets
+class CustomerW : public QWidget,  public UserWidgets
 {
     Q_OBJECT
 
