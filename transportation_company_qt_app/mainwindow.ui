@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>878</width>
-    <height>550</height>
+    <height>581</height>
    </rect>
   </property>
   <property name="cursor">
@@ -52,7 +52,7 @@ border-radius: 5px;
 </string>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="main_page">
        <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,4">
@@ -160,13 +160,13 @@ border-radius: 5px;
          </widget>
         </item>
         <item>
-         <widget class="QWidget" name="basic_widget" native="true"/>
+         <widget class="UserWidgets" name="basic_widget" native="true"/>
         </item>
        </layout>
       </widget>
       <widget class="QWidget" name="login_page">
        <property name="styleSheet">
-        <string notr="true">backgroung-color:  rgb(31, 7, 168)</string>
+        <string notr="true">background-color:  white</string>
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,1">
         <item>
@@ -243,7 +243,7 @@ font: 10 20px;</string>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="lEdit_login"/>
+                 <widget class="QLineEdit" name="LE_login"/>
                 </item>
                </layout>
               </item>
@@ -264,7 +264,7 @@ font: 10 20px;</string>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="lineEdit">
+                 <widget class="QLineEdit" name="LE_passwd">
                   <property name="echoMode">
                    <enum>QLineEdit::Password</enum>
                   </property>
@@ -329,7 +329,7 @@ color: white;
           <property name="title">
            <string>Rejestracja dla klienta</string>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_4" stretch="1,0,1,0,1,0,1,0,1,0,1,0,1">
+          <layout class="QVBoxLayout" name="verticalLayout_4" stretch="1,0,1,0,1,0,1,0,1,0,0,0,1">
            <property name="spacing">
             <number>0</number>
            </property>
@@ -365,7 +365,7 @@ color: white;
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit_3"/>
+            <widget class="QLineEdit" name="LE_company_name"/>
            </item>
            <item>
             <widget class="QLabel" name="label_4">
@@ -381,7 +381,7 @@ color: white;
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit_4"/>
+            <widget class="QLineEdit" name="LE_nip"/>
            </item>
            <item>
             <widget class="QLabel" name="label_5">
@@ -397,7 +397,7 @@ color: white;
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit_5"/>
+            <widget class="QLineEdit" name="LE_phone_nr"/>
            </item>
            <item>
             <widget class="QLabel" name="label_6">
@@ -413,7 +413,7 @@ color: white;
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit_6"/>
+            <widget class="QLineEdit" name="LE_email"/>
            </item>
            <item>
             <widget class="QLabel" name="label_7">
@@ -424,12 +424,12 @@ color: white;
               </size>
              </property>
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;Nazwa użytkownika:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;Nazwa użytkownika (login):&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit_7"/>
+            <widget class="QLineEdit" name="LE_user_name"/>
            </item>
            <item>
             <widget class="QLabel" name="label_8">
@@ -445,7 +445,7 @@ color: white;
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit_8">
+            <widget class="QLineEdit" name="LE_passwd_rg">
              <property name="echoMode">
               <enum>QLineEdit::Password</enum>
              </property>
@@ -509,6 +509,14 @@ background-color: rgb(57, 110, 255);
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>UserWidgets</class>
+   <extends>QWidget</extends>
+   <header>userwidgets.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

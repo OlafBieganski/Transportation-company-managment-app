@@ -9,15 +9,27 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    adminw.cpp \
+    customerw.cpp \
+    driverw.cpp \
+    logisticianw.cpp \
     main.cpp \
     mainwindow.cpp \
     userwidgets.cpp
 
 HEADERS += \
+    adminw.h \
+    customerw.h \
+    driverw.h \
+    logisticianw.h \
     mainwindow.h \
     userwidgets.h
 
 FORMS += \
+    adminw.ui \
+    customerw.ui \
+    driverw.ui \
+    logisticianw.ui \
     mainwindow.ui
 
 TRANSLATIONS += \

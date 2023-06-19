@@ -3,7 +3,11 @@
 
 #include <QWidget>
 
+enum UserType {NO_USER, ADMIN, LOGISTICIAN, CUSTOMER, DRIVER};
+
 class UserWidgets : public QWidget{
+
+    Q_OBJECT
 
 public:
     UserWidgets(QWidget *parent = nullptr);
