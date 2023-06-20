@@ -29,6 +29,16 @@ private slots:
 
     void on_pb_register_clicked();
 
+    void on_pb_reports_clicked();
+
+    void on_pb_empolyees_clicked();
+
+    void on_pb_shipments_clicked();
+
+    void on_pb_vehicles_clicked();
+
+    void on_pb_settings_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSqlDatabase db;

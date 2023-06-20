@@ -12,3 +12,24 @@ AdminW::~AdminW()
 {
     delete ui;
 }
+
+
+void AdminW::pb_employees_clicked(){
+
+}
+
+void AdminW::pb_reports_clicked(){
+
+}
+
+void AdminW::pb_setting_clicked(){
+
+}
+
+void AdminW::pb_shipments_clicked(){
+
+}
+
+void AdminW::pb_vehicles_clicked(){
+
+}

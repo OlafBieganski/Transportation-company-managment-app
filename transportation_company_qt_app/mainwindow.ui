@@ -161,6 +161,9 @@ border-radius: 5px;
         </item>
         <item>
          <widget class="QStackedWidget" name="stackedWidget_users">
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
           <widget class="QWidget" name="page"/>
           <widget class="QWidget" name="page_2"/>
          </widget>

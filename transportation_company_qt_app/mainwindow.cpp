@@ -54,6 +54,8 @@ void MainWindow::on_pb_login_clicked()
             DriverW* temp = new DriverW();
             userWidget = temp;
             user_btn_handler = temp;
+            ui->pb_empolyees->hide();
+            ui->pb_reports->hide();
         }
             break;
         case 'L':
@@ -61,6 +63,7 @@ void MainWindow::on_pb_login_clicked()
             LogisticianW* temp = new LogisticianW();
             userWidget = temp;
             user_btn_handler = temp;
+            ui->pb_empolyees->hide();
         }
             break;
         case 'A':
@@ -75,6 +78,8 @@ void MainWindow::on_pb_login_clicked()
             CustomerW* temp = new CustomerW();
             userWidget = temp;
             user_btn_handler = temp;
+            ui->pb_empolyees->hide();
+            ui->pb_vehicles->hide();
         }
             break;
         default:
@@ -82,8 +87,8 @@ void MainWindow::on_pb_login_clicked()
             break;
         }
 
-
         ui->stackedWidget_users->addWidget(userWidget);
+        ui->stackedWidget_users->setCurrentWidget(userWidget);
         ui->stackedWidget->setCurrentIndex(0); // zmieniamy na strone glowna
     } else {
         qDebug() << "Error connecting to the database: " << db.lastError().text();
@@ -91,10 +96,39 @@ void MainWindow::on_pb_login_clicked()
 
 }
 
-
 void MainWindow::on_pb_register_clicked()
 {
     // kod do rejestrowania klienta w bazie
     // chyba jest procedura skladowana do tego add_user czy cos
+}
+
+
+void MainWindow::on_pb_reports_clicked()
+{
+    user_btn_handler->pb_reports_clicked();
+}
+
+
+void MainWindow::on_pb_empolyees_clicked()
+{
+    user_btn_handler->pb_employees_clicked();
+}
+
+
+void MainWindow::on_pb_shipments_clicked()
+{
+    user_btn_handler->pb_shipments_clicked();
+}
+
+
+void MainWindow::on_pb_vehicles_clicked()
+{
+    user_btn_handler->pb_vehicles_clicked();
+}
+
+
+void MainWindow::on_pb_settings_clicked()
+{
+    user_btn_handler->pb_setting_clicked();
 }
 

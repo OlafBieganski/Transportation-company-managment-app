@@ -15,6 +15,9 @@ class CustomerW : public QWidget,  public UserWidgets
 public:
     explicit CustomerW(QWidget *parent = nullptr);
     ~CustomerW();
+    void pb_setting_clicked();
+    void pb_reports_clicked();
+    void pb_shipments_clicked();
 
 private:
     Ui::CustomerW *ui;

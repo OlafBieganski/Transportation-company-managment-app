@@ -12,3 +12,19 @@ LogisticianW::~LogisticianW()
 {
     delete ui;
 }
+
+void LogisticianW::pb_reports_clicked(){
+
+}
+
+void LogisticianW::pb_setting_clicked(){
+
+}
+
+void LogisticianW::pb_shipments_clicked(){
+
+}
+
+void LogisticianW::pb_vehicles_clicked(){
+
+}

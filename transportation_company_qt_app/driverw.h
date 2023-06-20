@@ -15,6 +15,9 @@ class DriverW : public QWidget, public UserWidgets
 public:
     explicit DriverW(QWidget *parent = nullptr);
     ~DriverW();
+    void pb_setting_clicked();
+    void pb_shipments_clicked();
+    void pb_vehicles_clicked();
 
 private:
     Ui::DriverW *ui;
