@@ -13,14 +13,10 @@ DriverW::~DriverW()
     delete ui;
 }
 
-void DriverW::pb_setting_clicked(){
-    ui->stackedWidget->setCurrentIndex(1);
-}
-
 void DriverW::pb_shipments_clicked(){
     ui->stackedWidget->setCurrentIndex(0);
 }
 
 void DriverW::pb_vehicles_clicked(){
-
+    ui->stackedWidget->setCurrentIndex(1);
 }

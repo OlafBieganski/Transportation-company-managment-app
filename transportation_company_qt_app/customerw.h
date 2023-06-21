@@ -15,7 +15,7 @@ class CustomerW : public QWidget,  public UserWidgets
 public:
     explicit CustomerW(QWidget *parent = nullptr);
     ~CustomerW();
-    void pb_setting_clicked();
+    // tutaj deklaracje tylko tych funcki ktore maja specyficzne dzialanie dla danego uzytkownika
     void pb_reports_clicked();
     void pb_shipments_clicked();
 

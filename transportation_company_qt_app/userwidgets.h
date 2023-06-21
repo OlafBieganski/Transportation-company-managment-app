@@ -10,7 +10,7 @@ class UserWidgets{
 public:
     UserWidgets() {}
     ~UserWidgets() {}
-    virtual void pb_setting_clicked() {}
+    virtual void pb_setting_clicked();
     virtual void pb_reports_clicked();
     virtual void pb_employees_clicked();
     virtual void pb_shipments_clicked();

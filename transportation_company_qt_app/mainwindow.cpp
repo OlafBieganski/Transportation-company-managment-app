@@ -36,7 +36,7 @@ void MainWindow::on_pb_login_clicked()
         query.prepare(queryString);
         query.bindValue(":username", username);
         query.bindValue(":password", passwd);
-        char accountType = 'e';
+        char accountType = 'x';
         if (query.exec()) {
             if (query.next()) {
                 accountType = query.value(0).toChar().toLatin1();
