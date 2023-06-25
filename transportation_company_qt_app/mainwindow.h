@@ -22,26 +22,25 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    QSqlDatabase db;
 
 private slots:
-
     void on_pb_login_clicked();
-
     void on_pb_register_clicked();
-
     void on_pb_reports_clicked();
-
     void on_pb_empolyees_clicked();
-
     void on_pb_shipments_clicked();
-
     void on_pb_vehicles_clicked();
-
     void on_pb_settings_clicked();
+
+    void on_close_btn_clicked();
+
+    void on_logout_btn_clicked();
+
+    void on_cancel_btn_clicked();
 
 private:
     Ui::MainWindow *ui;
-    QSqlDatabase db;
     UserType logged_user = NO_USER;
     UserWidgets* user_btn_handler = nullptr;
     QWidget* userWidget = nullptr;

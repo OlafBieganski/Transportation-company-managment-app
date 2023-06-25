@@ -2,6 +2,7 @@
 #define DRIVERW_H
 
 #include <QWidget>
+#include <QtSql>
 #include "userwidgets.h"
 
 namespace Ui {
@@ -20,8 +21,14 @@ public:
     void pb_shipments_clicked();
     void pb_vehicles_clicked();
 
+private slots:
+    void on_readShipmentBtn_clicked();
+
+    void on_readTruckBtn_clicked();
+
 private:
     Ui::DriverW *ui;
+    QSqlQueryModel *queryModel;
 };
 
 #endif // DRIVERW_H

@@ -1,4 +1,3 @@
-
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -20,13 +19,13 @@ void MainWindow::on_pb_login_clicked()
 {
     // uzytkownicy musza miec stowrzone konta z poziomu bazy
     // tutaj uzywamy tych danych do logowania
-    // nazwy i hasla musz byc zgodne z tymi z tabeli access
+    // nazwy i hasla musza byc zgodne z tymi z tabeli access
     username = ui->LE_login->text();
-    passwd = ui->LE_login->text();
+    passwd = ui->LE_passwd->text();
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
+    db = QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("localhost");
-    db.setDatabaseName("transportation_company_DB"); // nie wiem czy końcówka nie z małych _db
+    db.setDatabaseName("transportation_company_DB");
     db.setUserName(username);
     db.setPassword(passwd);
 
@@ -36,10 +35,10 @@ void MainWindow::on_pb_login_clicked()
         query.prepare(queryString);
         query.bindValue(":username", username);
         query.bindValue(":password", passwd);
-        char accountType = 'x';
+        QString accountType;
         if (query.exec()) {
             if (query.next()) {
-                accountType = query.value(0).toChar().toLatin1();
+                accountType = query.value(0).toString();
             } else {
                 qDebug() << "No accountType found";
                 return;
@@ -48,8 +47,17 @@ void MainWindow::on_pb_login_clicked()
             qDebug() << "Error executing the query: " << query.lastError().text();
             return;
         }
-        switch (accountType) {
-        case 'D':
+
+        if (accountType == "C")
+        {
+            CustomerW* temp = new CustomerW();
+            userWidget = temp;
+            user_btn_handler = temp;
+            ui->pb_empolyees->hide();
+            ui->pb_vehicles->hide();
+            ui->pb_reports->hide();
+        }
+        else if (accountType == "D")
         {
             DriverW* temp = new DriverW();
             userWidget = temp;
@@ -57,43 +65,30 @@ void MainWindow::on_pb_login_clicked()
             ui->pb_empolyees->hide();
             ui->pb_reports->hide();
         }
-            break;
-        case 'L':
+        else if (accountType == "A")
+        {
+            AdminW* temp = new AdminW();
+            userWidget = temp;
+            user_btn_handler = temp;
+        }
+        else if (accountType == "L")
         {
             LogisticianW* temp = new LogisticianW();
             userWidget = temp;
             user_btn_handler = temp;
             ui->pb_empolyees->hide();
         }
-            break;
-        case 'A':
+        else
         {
-            AdminW* temp = new AdminW();
-            userWidget = temp;
-            user_btn_handler = temp;
-        }
-            break;
-        case 'C':
-        {
-            CustomerW* temp = new CustomerW();
-            userWidget = temp;
-            user_btn_handler = temp;
-            ui->pb_empolyees->hide();
-            ui->pb_vehicles->hide();
-        }
-            break;
-        default:
             qDebug() << "Error while determining user type. ";
-            break;
+            return;
         }
-
         ui->stackedWidget_users->addWidget(userWidget);
         ui->stackedWidget_users->setCurrentWidget(userWidget);
         ui->stackedWidget->setCurrentIndex(0); // zmieniamy na strone glowna
     } else {
         qDebug() << "Error connecting to the database: " << db.lastError().text();
     }
-
 }
 
 void MainWindow::on_pb_register_clicked()
@@ -129,6 +124,28 @@ void MainWindow::on_pb_vehicles_clicked()
 
 void MainWindow::on_pb_settings_clicked()
 {
-    user_btn_handler->pb_setting_clicked();
+    ui->stackedWidget->setCurrentIndex(2);
+}
+
+
+void MainWindow::on_close_btn_clicked()
+{
+    db.close();
+    close();
+}
+
+
+void MainWindow::on_logout_btn_clicked()
+{
+    db.close();
+    ui->stackedWidget->setCurrentIndex(1);
+    ui->LE_login->clear();
+    ui->LE_passwd->clear();
+}
+
+
+void MainWindow::on_cancel_btn_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
 }
 
